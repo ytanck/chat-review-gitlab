@@ -1,0 +1,18 @@
+stages:
+  - merge-request
+
+Code Review:
+  stage: merge-request
+  image: node:18.20.4
+  tags: 
+    - aaa
+  script:
+    - echo "$CI_MERGE_REQUEST_PROJECT_ID" 
+    - echo "$CI_MERGE_REQUEST_IID"
+    - echo "$GITLAB_TOKEN"
+  only:
+    - merge_requests
+  except:
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME !~ /^(master|release)$/
+  when: manual
