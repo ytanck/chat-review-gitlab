@@ -4,14 +4,15 @@ export default class ChatGPT {
   language;
   request;
   constructor(config) {
-    const host = "https://dashscope.aliyuncs.com/compatible-mode";
-    this.request = createRequest(host, {
+    const { BASE_URL, API_KEY, DEFAULT_MODEL } = process.env;
+    const baseUrl = BASE_URL || "https://api.openai.com";
+    this.request = createRequest(baseUrl, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer sk-xxx`,
+        Authorization: `Bearer ${API_KEY}`,
       },
       data: {
-        model: "qwen-turbo",
+        model: DEFAULT_MODEL || "gpt3.5-turbo",
         temperature: 1,
         top_p: 1,
         presence_penalty: 1,

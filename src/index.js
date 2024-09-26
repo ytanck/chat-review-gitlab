@@ -3,9 +3,10 @@ import cors from "cors";
 import { logger } from "./utils.js";
 import ChatGPT from "./chatgpt.js";
 import Gitlab from "./gitlab.js";
-// import * as dotenv from 'dotenv'
-// dotenv.config()
+import * as dotenv from "dotenv";
+
 const app = express();
+dotenv.config();
 
 app.use(cors());
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get("/", async (req, res) => {
   logger.success(new Date().toLocaleString(), req.url, req.method);
+
   res.send("get-ok");
 });
 
@@ -28,6 +30,11 @@ app.post("/code-review", async (req, res) => {
       accessToken: query.access_token,
     });
     const { state, changes, ref } = await gitlab.getChanges();
+
+    if (!process.env.API_KEY) {
+      logger.error("API_KEY is empty!");
+      return res.status(200).send({ status: "200", msg: "API_KEY is empty!" });
+    }
 
     if (state !== "opened") {
       console.log("MR is closed");
@@ -46,7 +53,6 @@ app.post("/code-review", async (req, res) => {
     res.status(200).send({ status: "200", msg: "ok" });
   } catch (error) {
     console.log("catch", error);
-    // gitlab_rails['webhook_timeout'] = 10
     res.status(500).send({ status: "500", error });
   }
 });

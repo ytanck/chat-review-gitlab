@@ -1,6 +1,6 @@
-import createRequest from './request.js';
-import { logger } from './utils.js';
-import camelCase from 'camelcase';
+import createRequest from "./request.js";
+import { logger } from "./utils.js";
+import camelCase from "camelcase";
 
 const formatByCamelCase = (obj) => {
   const target = Object.keys(obj).reduce((result, key) => {
@@ -10,6 +10,14 @@ const formatByCamelCase = (obj) => {
 
   return target;
 };
+
+/**
+对diff 的处理：
+Gitlab 的每一行 diff 其实是由三种状态组成 ‘+’ ‘-’ 和 ‘’：
+如果最后一行是 ‘+’，则给该接口传入 new_line 和 new_path；
+如果最后一行是 ‘-’ ，则给该接口传入 old_line 和 old_path；
+如果最后一行是 ‘’， 则 new_line、new_path 和 old_line、old_path 都要传入
+*/
 
 const parseLastDiff = (gitDiff) => {
   const diffList = gitDiff.split("\n").reverse();
@@ -49,12 +57,14 @@ export default class Gitlab {
   request;
   target;
 
-  constructor({ /* target  */ projectId, mrIId, accessToken }) {
-    const host = "https://gitlab.19ego.cn";
-    this.request = createRequest(host, { params: { private_token: accessToken } });
+  constructor({ projectId, mrIId, accessToken }) {
+    const host = process.env.GITLAB_URL || "https://gitlab.cn";
+    this.request = createRequest(host, {
+      params: { private_token: accessToken },
+    });
     this.mrIId = mrIId;
     this.projectId = projectId;
-    // this.target = target || /\.(j|t)sx?$/;
+    this.target = process.env.TARGET_CR_FILE || /\.(j|t)sx?$/;
   }
 
   getChanges() {
@@ -72,9 +82,9 @@ export default class Gitlab {
             if (renamedFile || deletedFile) {
               return false;
             }
-            // if (!this.target.test(newPath)) {
-            //   return false;
-            // }
+            if (!this.target.test(newPath)) {
+              return false;
+            }
             return true;
           })
           .map((item) => {
@@ -147,4 +157,4 @@ export default class Gitlab {
       ref,
     });
   }
-};
+}
