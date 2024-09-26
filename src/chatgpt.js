@@ -8,7 +8,7 @@ export default class ChatGPT {
     this.request = createRequest(host, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer sk-334731aaea704a97aa7574a39b3135a1`,
+        Authorization: `Bearer sk-xxx`,
       },
       data: {
         model: "qwen-turbo",
