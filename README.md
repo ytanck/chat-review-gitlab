@@ -6,11 +6,18 @@
 ![image](https://github.com/user-attachments/assets/ce10a9bc-adcf-4f20-bb76-fa3ab63357d2)
 
 ## Usage
+### 运行服务
+
+1. `git clone https://github.com/ytanck/chat-review-gitlab.git`
+2. `npm install`
+3. `npm run start`
 
 ### 创建Project Access Tokens
 ![image](https://github.com/user-attachments/assets/0992a032-cdeb-455d-97a5-b17950c1efd5)
 
 ### Gitlab配置Webhook
+配置回调服务地址
+
 Webhook URL示例:`http://xxx:4000/code-review?access_token=<access_token>`
 
 ![image](https://github.com/user-attachments/assets/d79b46ba-f3b1-4a85-89c7-274330e6ef17)
